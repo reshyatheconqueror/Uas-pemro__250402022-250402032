@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembaca Kode Warna Resistor</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container{
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+        }
+
+        label{
+            font-weight: bold;
+        }
+
+        select, button{
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button{
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background: #0056b3;
+        }
+
+        .hasil{
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9f7ef;
+            border-left: 5px solid green;
+            border-radius: 5px;
+        }
+
+        .warna-list{
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .gelang-group{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Pembaca Kode Warna Resistor</h1>
+    <div style="margin-bottom:20px; padding:10px; background:#eef3ff; border-radius:8px;">
+        <p><b>Nama:</b> Ihsan Rizki Ramadhan Habayahan</p>
+        <p><b>NIM:</b> 250402032</p>
+        <p><b>Nama:</b> Resya Devindran Putra Ramadhan</p>
+        <p><b>NIM:</b> 250402022</p>
+    </div>
+
+
+    <div class="warna-list">
+        <h3>Warna Valid</h3>
+
+        <p>
+            hitam, coklat, merah, oranye, kuning,
+            hijau, biru, ungu, abu, putih,
+            emas, perak
+        </p>
+    </div>
+
+    <label>Jumlah Gelang:</label>
+    <select id="jumlahGelang" onchange="buatInputGelang()">
+        <option value="3">3 Gelang</option>
+        <option value="4">4 Gelang</option>
+        <option value="5">5 Gelang</option>
+    </select>
+
+    <div id="inputGelang"></div>
+
+    <button onclick="hitungResistor()">
+        Hitung Resistansi
+    </button>
+
+    <div class="hasil" id="hasil" style="display:none;"></div>
+
+</div>
+
+<script>
+
+class Resistor {
+
+    constructor(jumlahGelang, gelang){
+        this.jumlahGelang = jumlahGelang;
+        this.gelang = gelang;
+    }
+
+    warnaDigit = {
+        "hitam": 0,
+        "coklat": 1,
+        "merah": 2,
+        "oranye": 3,
+        "kuning": 4,
+        "hijau": 5,
+        "biru": 6,
+        "ungu": 7,
+        "abu": 8,
+        "putih": 9
+    };
+
+    warnaPengali = {
+        "hitam": 1,
+        "coklat": 10,
+        "merah": 100,
+        "oranye": 1000,
+        "kuning": 10000,
+        "hijau": 100000,
+        "biru": 1000000,
+        "ungu": 10000000,
+        "abu": 100000000,
+        "putih": 1000000000,
+        "emas": 0.1,
+        "perak": 0.01
+    };
+
+    warnaToleransi = {
+        "coklat": "±1%",
+        "merah": "±2%",
+        "hijau": "±0.5%",
+        "biru": "±0.25%",
+        "ungu": "±0.1%",
+        "abu": "±0.05%",
+        "emas": "±5%",
+        "perak": "±10%",
+        "tanpa warna": "±20%"
+    };
+
+    hitungResistansi(){
+
+        let nilai;
+        let toleransi;
+
+        if(this.jumlahGelang == 3){
+
+            let digit1 = this.warnaDigit[this.gelang[0]];
+            let digit2 = this.warnaDigit[this.gelang[1]];
+            let pengali = this.warnaPengali[this.gelang[2]];
+
+            nilai = ((digit1 * 10) + digit2) * pengali;
+            toleransi = "±20%";
+
+        }
+
+        else if(this.jumlahGelang == 4){
+
+            let digit1 = this.warnaDigit[this.gelang[0]];
+            let digit2 = this.warnaDigit[this.gelang[1]];
+            let pengali = this.warnaPengali[this.gelang[2]];
+
+            nilai = ((digit1 * 10) + digit2) * pengali;
+            toleransi = this.warnaToleransi[this.gelang[3]];
+
+        }
+
+        else if(this.jumlahGelang == 5){
+
+            let digit1 = this.warnaDigit[this.gelang[0]];
+            let digit2 = this.warnaDigit[this.gelang[1]];
+            let digit3 = this.warnaDigit[this.gelang[2]];
+            let pengali = this.warnaPengali[this.gelang[3]];
+
+            nilai = ((digit1 * 100) + (digit2 * 10) + digit3) * pengali;
+            toleransi = this.warnaToleransi[this.gelang[4]];
+        }
+
+        return {
+            nilai: nilai,
+            toleransi: toleransi
+        };
+    }
+}
+
+const warnaDigitValid = [
+    "hitam",
+    "coklat",
+    "merah",
+    "oranye",
+    "kuning",
+    "hijau",
+    "biru",
+    "ungu",
+    "abu",
+    "putih"
+];
+
+const warnaPengaliValid = [
+    "hitam",
+    "coklat",
+    "merah",
+    "oranye",
+    "kuning",
+    "hijau",
+    "biru",
+    "ungu",
+    "abu",
+    "putih",
+    "emas",
+    "perak"
+];
+
+const warnaToleransiValid = [
+    "coklat",
+    "merah",
+    "hijau",
+    "biru",
+    "ungu",
+    "abu",
+    "emas",
+    "perak"
+];
+
+function buatInputGelang(){
+
+    let jumlah = parseInt(document.getElementById("jumlahGelang").value);
+    let container = document.getElementById("inputGelang");
+
+    container.innerHTML = "";
+
+    for(let i = 1; i <= jumlah; i++){
+
+        let div = document.createElement("div");
+        div.className = "gelang-group";
+
+        let label = document.createElement("label");
+        label.innerText = "Gelang " + i;
+
+        let select = document.createElement("select");
+        select.id = "gelang" + i;
+
+        let daftarWarna = [];
+
+        if(jumlah == 3){
+
+            if(i <= 2){
+                daftarWarna = warnaDigitValid;
+            }
+            else{
+                daftarWarna = warnaPengaliValid;
+            }
+
+        }
+
+        else if(jumlah == 4){
+
+            if(i <= 2){
+                daftarWarna = warnaDigitValid;
+            }
+            else if(i == 3){
+                daftarWarna = warnaPengaliValid;
+            }
+            else{
+                daftarWarna = warnaToleransiValid;
+            }
+
+        }
+
+        else if(jumlah == 5){
+
+            if(i <= 3){
+                daftarWarna = warnaDigitValid;
+            }
+            else if(i == 4){
+                daftarWarna = warnaPengaliValid;
+            }
+            else{
+                daftarWarna = warnaToleransiValid;
+            }
+
+        }
+
+        daftarWarna.forEach(function(warna){
+
+            let option = document.createElement("option");
+
+            option.value = warna;
+            option.text = warna;
+
+            select.appendChild(option);
+
+        });
+
+        div.appendChild(label);
+        div.appendChild(select);
+
+        container.appendChild(div);
+    }
+}
+
+
+function formatOhm(nilai){
+
+    if(nilai >= 1000000){
+        return (nilai / 1000000) + " MΩ";
+    }
+
+    else if(nilai >= 1000){
+        return (nilai / 1000) + " kΩ";
+    }
+
+    else{
+        return nilai + " Ω";
+    }
+}
+
+
+function hitungResistor(){
+
+    let jumlah = parseInt(document.getElementById("jumlahGelang").value);
+
+    let gelang = [];
+
+    for(let i = 1; i <= jumlah; i++){
+
+        gelang.push(
+            document.getElementById("gelang" + i).value
+        );
+    }
+
+    let resistor = new Resistor(jumlah, gelang);
+
+    let hasil = resistor.hitungResistansi();
+
+    document.getElementById("hasil").style.display = "block";
+
+    document.getElementById("hasil").innerHTML = `
+        <h3>Hasil Perhitungan</h3>
+        <p><b>Nilai Resistansi:</b> ${formatOhm(hasil.nilai)}</p>
+        <p><b>Toleransi:</b> ${hasil.toleransi}</p>
+    `;
+}
+
+buatInputGelang();
+
+</script>
+
+</body>
+</html>
